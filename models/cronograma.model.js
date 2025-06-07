@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      estado: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "activo", // podés cambiar el valor por defecto o quitarlo
+      },
       fechaCreacion: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,

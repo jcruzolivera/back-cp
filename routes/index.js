@@ -1,8 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controlador = require('../controllers/usuario.controller');
+const authMiddleware = require("../middlewares/auth.middleware");
+// Controladores
+const usuarioControlador = require("../controllers/usuario.controller");
+const rolControlador = require("../controllers/rol.controller");
 
-router.get('/usuarios', controlador.obtenerUsuarios);
-router.post('/usuarios', controlador.crearUsuario);
+//Usuarios
+router.get("/usuarios/:id", authMiddleware, usuarioControlador.findOne);
+router.post("/usuarios", usuarioControlador.create);
+
+//Roles
+router.post("/rol", rolControlador.create);
 
 module.exports = router;
