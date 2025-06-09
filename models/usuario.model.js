@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       puesto: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       correo: {
         type: DataTypes.STRING,
@@ -16,28 +17,33 @@ module.exports = (sequelize, DataTypes) => {
       },
       documento: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       legajo: {
         type: DataTypes.INTEGER,
+        allowNull: true,
       },
       telefono: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       clave: {
         type: DataTypes.STRING,
       },
       anoIngreso: {
         type: DataTypes.INTEGER,
+        allowNull: true,
       },
       fechaCreacion: {
         type: DataTypes.DATE,
       },
       fechaBaja: {
         type: DataTypes.DATE,
+        allowNull: true,
       },
       companiaId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "companias",
           key: "id",
@@ -45,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       rolId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "roles",
           key: "id",

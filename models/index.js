@@ -82,7 +82,7 @@ db.Locacion.hasMany(db.DiaCronograma, {
   foreignKey: "locacionId",
   as: "dias",
 });
-db.DiaCronograma.belongsTo(db.Accion, {
+db.DiaCronograma.belongsTo(db.Locacion, {
   foreignKey: "locacionId",
   as: "locacion",
 });
