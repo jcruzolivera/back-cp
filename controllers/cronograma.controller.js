@@ -123,6 +123,8 @@ exports.updateCronograma = async (req, res) => {
   const { id } = req.params;
   const { dias, items } = req.body;
 
+  console.log("Datos recibidos para actualizar cronograma:", { id, dias, items });
+
   const t = await db.sequelize.transaction();
 
   try {
@@ -162,7 +164,7 @@ exports.updateCronograma = async (req, res) => {
           well: item.well,
           operacion: item.operacion,
           network: item.network,
-          wbsNumber: item.wbsNumber,
+          wbs: item.wbs,
           pad: item.pad,
         },
         { transaction: t }

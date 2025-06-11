@@ -17,6 +17,7 @@ const itemControlador = require("../controllers/item.controller");
 const cronogramaControlador = require("../controllers/cronograma.controller");
 const diaCronogramaControlador = require("../controllers/diaCronograma.controller");
 const accionControlador = require("../controllers/accion.controller");
+const generarCronogramaController = require("../controllers/generarcronograma.controller");
 
 //Auth
 router.post("/login", authController.login);
@@ -84,7 +85,8 @@ router.get("/cronograma/:id", cronogramaControlador.findOne);
 router.put("/cronograma/:id", cronogramaControlador.update);
 router.post("/cronograma", cronogramaControlador.create);
 router.delete("/cronograma/:id", cronogramaControlador.delete);
-router.put("/cronograma/:id", cronogramaControlador.updateCronograma);
+router.put("/cronogramaItems/:id", cronogramaControlador.updateCronograma);
+router.post("/generarCronogramasMesActual", generarCronogramaController.generarCronogramasMesActual);
 
 //Dia Cronograma
 router.get("/dia-cronograma", diaCronogramaControlador.findAll);
