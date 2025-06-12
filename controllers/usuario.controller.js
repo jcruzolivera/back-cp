@@ -155,3 +155,47 @@ exports.delete = async (req, res) => {
     res.status(500).json({ mensaje: "Error al dar de baja el usuario", error });
   }
 };
+
+exports.getUsuariosPorCompania = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const usuarios = await Usuario.findAll({
+      where: {
+        companiaId: id,
+        fechaBaja: null, // Solo usuarios activos
+      },
+      attributes: ["id", "nombre", "legajo"],
+      order: [["nombre", "ASC"]],
+    });
+
+    res.json(usuarios);
+  } catch (error) {
+    console.error("Error al obtener usuarios de la compañía:", error);
+    res.status(500).json({ mensaje: "Error al obtener usuarios" });
+  }
+};
+
+const { Cronograma } = require("../models");
+
+exports.getTimesheetsPorUsuario = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const timesheets = await Cronograma.findAll({
+      where: {
+        usuarioId: id,
+      },
+      attributes: ["id", "mes", "anio", "fechaCreacion"],
+      order: [
+        ["anio", "DESC"],
+        ["mes", "DESC"],
+      ],
+    });
+
+    res.json(timesheets);
+  } catch (error) {
+    console.error("Error al obtener timesheets del usuario:", error);
+    res.status(500).json({ mensaje: "Error al obtener las hojas de tiempo" });
+  }
+};

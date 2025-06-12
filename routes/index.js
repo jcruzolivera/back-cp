@@ -18,6 +18,7 @@ const cronogramaControlador = require("../controllers/cronograma.controller");
 const diaCronogramaControlador = require("../controllers/diaCronograma.controller");
 const accionControlador = require("../controllers/accion.controller");
 const generarCronogramaController = require("../controllers/generarcronograma.controller");
+const metricasController = require("../controllers/metricas.controller");
 
 //Auth
 router.post("/login", authController.login);
@@ -26,10 +27,16 @@ router.post("/register", authController.register);
 //Usuarios
 router.get("/usuarios", authMiddleware, usuarioControlador.findAll);
 router.get("/usuarios/:id", authMiddleware, usuarioControlador.findOne);
-router.get("/verOperarios", authMiddleware, usuarioControlador.findAllOperarios);
+router.get(
+  "/verOperarios",
+  authMiddleware,
+  usuarioControlador.findAllOperarios
+);
 router.put("/usuarios/:id", authMiddleware, usuarioControlador.update);
 router.post("/usuarios", authMiddleware, usuarioControlador.create);
 router.delete("/usuarios/:id", authMiddleware, usuarioControlador.delete);
+router.get("/compania/:id/usuarios", usuarioControlador.getUsuariosPorCompania);
+router.get("/usuarios/:id/timesheets", usuarioControlador.getTimesheetsPorUsuario);
 
 //Roles
 router.get("/rol", rolControlador.findAll);
@@ -54,7 +61,7 @@ router.delete("/referencia/:id", authMiddleware, referenciaControlador.delete);
 
 //Proyecto
 router.get("/proyecto", proyectoControlador.findAll);
-router.get("/proyecto/:id",proyectoControlador.findOne);
+router.get("/proyecto/:id", proyectoControlador.findOne);
 router.put("/proyecto/:id", authMiddleware, proyectoControlador.update);
 router.post("/proyecto", authMiddleware, proyectoControlador.create);
 router.delete("/proyecto/:id", authMiddleware, proyectoControlador.delete);
@@ -86,18 +93,35 @@ router.get("/cronograma/:id", authMiddleware, cronogramaControlador.findOne);
 router.put("/cronograma/:id", authMiddleware, cronogramaControlador.update);
 router.post("/cronograma", authMiddleware, cronogramaControlador.create);
 router.delete("/cronograma/:id", authMiddleware, cronogramaControlador.delete);
-router.put("/cronogramaItems/:id", authMiddleware, cronogramaControlador.updateCronograma);
+router.put(
+  "/cronogramaItems/:id",
+  authMiddleware,
+  cronogramaControlador.updateCronograma
+);
 router.post(
-  "/generarCronogramasMesActual",authMiddleware, 
+  "/generarCronogramasMesActual",
+  authMiddleware,
   generarCronogramaController.generarCronogramasMesActual
 );
 
 //Dia Cronograma
 router.get("/dia-cronograma", authMiddleware, diaCronogramaControlador.findAll);
-router.get("/dia-cronograma/:id", authMiddleware, diaCronogramaControlador.findOne);
-router.put("/dia-cronograma/:id", authMiddleware, diaCronogramaControlador.update);
+router.get(
+  "/dia-cronograma/:id",
+  authMiddleware,
+  diaCronogramaControlador.findOne
+);
+router.put(
+  "/dia-cronograma/:id",
+  authMiddleware,
+  diaCronogramaControlador.update
+);
 router.post("/dia-cronograma", authMiddleware, diaCronogramaControlador.create);
-router.delete("/dia-cronograma/:id", authMiddleware, diaCronogramaControlador.delete);
+router.delete(
+  "/dia-cronograma/:id",
+  authMiddleware,
+  diaCronogramaControlador.delete
+);
 
 //Accion
 router.get("/accion", accionControlador.findAll);
@@ -105,5 +129,12 @@ router.get("/accion/:id", accionControlador.findOne);
 router.put("/accion/:id", authMiddleware, accionControlador.update);
 router.post("/accion", authMiddleware, accionControlador.create);
 router.delete("/accion/:id", authMiddleware, accionControlador.delete);
+
+//Metricas
+router.get(
+  "/metricas",
+  authMiddleware,
+  metricasController.obtenerDiasTrabajadosVsDescanso
+);
 
 module.exports = router;
