@@ -34,6 +34,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      domicilio: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
       fechaCreacion: {
         type: DataTypes.DATE,
       },

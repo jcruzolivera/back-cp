@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       accionId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "acciones",
           key: "id",
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       locacionId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "locacion",
           key: "id",

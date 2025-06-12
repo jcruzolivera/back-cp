@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       proyectoId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "proyectos",
           key: "id",

@@ -21,9 +21,15 @@ exports.create = async (req, res) => {
 // Obtener todos los cronogramas
 exports.findAll = async (req, res) => {
   try {
-    const cronogramas = await Cronograma.findAll();
+    console.log(req.user)
+    const usuarioId = req.user.id; // viene del middleware
+
+    const cronogramas = await Cronograma.findAll({
+      where: { usuarioId },
+    });
     res.json(cronogramas);
   } catch (error) {
+    console.error("Error cronogramas:", error);
     res.status(500).json({ mensaje: "Error al obtener cronogramas", error });
   }
 };
@@ -123,7 +129,11 @@ exports.updateCronograma = async (req, res) => {
   const { id } = req.params;
   const { dias, items } = req.body;
 
-  console.log("Datos recibidos para actualizar cronograma:", { id, dias, items });
+  console.log("Datos recibidos para actualizar cronograma:", {
+    id,
+    dias,
+    items,
+  });
 
   const t = await db.sequelize.transaction();
 

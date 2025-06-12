@@ -1,16 +1,23 @@
-const jwt = require('jsonwebtoken');
-const jwtConfig = require('../config/jwt.config');
+const jwt = require("jsonwebtoken");
+const jwtConfig = require("../config/jwt.config");
 
 module.exports = (req, res, next) => {
-  const token = req.headers['authorization'];
+  const authHeader = req.headers["authorization"];
 
-  if (!token) return res.status(403).json({ mensaje: 'Token no proporcionado' });
+  if (!authHeader) {
+    return res.status(403).json({ mensaje: "Token no proporcionado" });
+  }
+
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
 
   try {
     const decoded = jwt.verify(token, jwtConfig.secret);
-    req.user = decoded;
+    req.user = decoded; // Usar esto para obtener el id de usuario
     next();
   } catch (error) {
-    return res.status(401).json({ mensaje: 'Token inválido o expirado' });
+    console.error("Error al verificar el token:", error);
+    return res.status(401).json({ mensaje: "Token inválido o expirado" });
   }
 };
