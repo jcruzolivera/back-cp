@@ -19,6 +19,7 @@ const diaCronogramaControlador = require("../controllers/diaCronograma.controlle
 const accionControlador = require("../controllers/accion.controller");
 const generarCronogramaController = require("../controllers/generarcronograma.controller");
 const metricasController = require("../controllers/metricas.controller");
+const puestoControlador = require("../controllers/puesto.controller");
 
 //Auth
 router.post("/login", authController.login);
@@ -36,7 +37,15 @@ router.put("/usuarios/:id", authMiddleware, usuarioControlador.update);
 router.post("/usuarios", authMiddleware, usuarioControlador.create);
 router.delete("/usuarios/:id", authMiddleware, usuarioControlador.delete);
 router.get("/compania/:id/usuarios", usuarioControlador.getUsuariosPorCompania);
-router.get("/usuarios/:id/timesheets", usuarioControlador.getTimesheetsPorUsuario);
+router.get(
+  "/usuarios/:id/timesheets",
+  usuarioControlador.getTimesheetsPorUsuario
+);
+router.post(
+  "/usuarios/cargar-masivos",
+  authMiddleware,
+  usuarioControlador.importarOperarios
+);
 
 //Roles
 router.get("/rol", rolControlador.findAll);
@@ -79,6 +88,13 @@ router.get("/locacion/:id", locacionControlador.findOne);
 router.put("/locacion/:id", authMiddleware, locacionControlador.update);
 router.post("/locacion", authMiddleware, locacionControlador.create);
 router.delete("/locacion/:id", authMiddleware, locacionControlador.delete);
+
+//Puesto
+router.get("/puesto", puestoControlador.findAll);
+router.get("/puesto/:id", puestoControlador.findOne);
+router.put("/puesto/:id", authMiddleware, puestoControlador.update);
+router.post("/puesto", authMiddleware, puestoControlador.create);
+router.delete("/puesto/:id", authMiddleware, puestoControlador.delete);
 
 //Item
 router.get("/item", authMiddleware, itemControlador.findAll);

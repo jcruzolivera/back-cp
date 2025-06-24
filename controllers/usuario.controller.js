@@ -1,7 +1,10 @@
 const db = require("../models");
+const bcrypt = require("bcrypt");
+
 const Usuario = db.Usuario;
 const Rol = db.Rol;
 const Compania = db.Compania;
+const Puesto = db.Puesto;
 
 // Crear un nuevo usuario
 exports.create = async (req, res) => {
@@ -65,6 +68,11 @@ exports.findOne = async (req, res) => {
           as: "compania", // Asegúrate de que el alias coincida con tu modelo
           attributes: ["nombre"], // O todos los campos si preferís
         },
+        {
+          model: Puesto,
+          as: "puestoAlias", // Asegúrate de que el alias coincida con tu modelo
+          attributes: ["nombre"],
+        },
       ],
     });
 
@@ -77,24 +85,20 @@ exports.findOne = async (req, res) => {
     res.status(500).json({ mensaje: "Error al obtener el usuario", error });
   }
 };
-
-// Actualizar un usuario por ID
 exports.update = async (req, res) => {
   try {
     const { id } = req.params;
     const usuario = await Usuario.findByPk(id);
 
-    console.log("Usuario encontrado:", usuario);
-
     if (!usuario) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
 
-    // Campos permitidos para actualizar
+    // Extraemos los campos del cuerpo del request
     const {
       nombre,
       legajo,
-      puesto,
+      puestoId, // ← Nuevo campo para la relación
       companiaId,
       correo,
       anoIngreso,
@@ -103,21 +107,27 @@ exports.update = async (req, res) => {
       telefono,
     } = req.body;
 
-    console.log("Usuario actualizado");
-
-    // Opcional: validar si la compañía existe
+    // Validación opcional: verificar si la compañía existe
     if (companiaId) {
       const compania = await Compania.findByPk(companiaId);
       if (!compania) {
         return res.status(400).json({ mensaje: "Compañía no válida" });
       }
     }
-    console.log("Usuario actualizado 2 ");
 
+    // Validación opcional: verificar si el puesto existe (si se envió)
+    if (puestoId) {
+      const puesto = await db.Puesto.findByPk(puestoId);
+      if (!puesto) {
+        return res.status(400).json({ mensaje: "Puesto no válido" });
+      }
+    }
+
+    // Actualización
     await usuario.update({
       nombre,
       legajo,
-      puesto,
+      puestoId, // ← Guardamos el nuevo puesto
       companiaId,
       correo,
       anoIngreso,
@@ -125,7 +135,6 @@ exports.update = async (req, res) => {
       documento,
       telefono,
     });
-    console.log("Usuario actualizado 3");
 
     res.json({ mensaje: "Usuario actualizado correctamente", usuario });
   } catch (error) {
@@ -197,5 +206,57 @@ exports.getTimesheetsPorUsuario = async (req, res) => {
   } catch (error) {
     console.error("Error al obtener timesheets del usuario:", error);
     res.status(500).json({ mensaje: "Error al obtener las hojas de tiempo" });
+  }
+};
+
+exports.importarOperarios = async (req, res) => {
+  const operarios = req.body;
+
+  if (!Array.isArray(operarios) || operarios.length === 0) {
+    return res
+      .status(400)
+      .json({ mensaje: "No se proporcionaron operarios válidos" });
+  }
+
+  try {
+    const usuariosFinales = [];
+
+    for (const op of operarios) {
+      // Validar campos obligatorios
+      if (!op.nombre || !op.correo || !op.documento) continue;
+
+      // Revisar si ya existe por correo
+      const existente = await Usuario.findOne({ where: { correo: op.correo } });
+
+      // Encriptar clave (usando documento)
+      const claveHasheada = await bcrypt.hash(op.documento.toString(), 10);
+
+      const usuarioData = {
+        ...op,
+        clave: claveHasheada,
+        fechaCreacion: new Date(),
+        rolId: 2, // por ejemplo, rol "operario"
+        companiaId: 1, // podés ajustarlo si lo sacás del token o parámetro
+      };
+
+      if (existente) {
+        // Actualizar datos del existente (excepto clave, que no cambiamos)
+        await Usuario.update(usuarioData, { where: { correo: op.correo } });
+      } else {
+        // Nuevo usuario
+        usuariosFinales.push(usuarioData);
+      }
+    }
+
+    // Crear todos los nuevos de una vez
+    const createdOperarios = await Usuario.bulkCreate(usuariosFinales);
+
+    res.status(201).json({
+      mensaje: `Operarios creados: ${createdOperarios.length}`,
+      creados: createdOperarios,
+    });
+  } catch (error) {
+    console.error("Error al importar operarios:", error);
+    res.status(500).json({ mensaje: "Error al importar los operarios", error });
   }
 };

@@ -24,6 +24,7 @@ db.Proyecto = require("./proyecto.model")(sequelize, Sequelize);
 db.Item = require("./item.model")(sequelize, Sequelize);
 db.Operacion = require("./operacion.model")(sequelize, Sequelize);
 db.Referencia = require("./referencia.model")(sequelize, Sequelize);
+db.Puesto = require("./puesto.model")(sequelize, Sequelize);
 
 // Usuario - Compañia
 db.Compania.hasMany(db.Usuario, {
@@ -105,6 +106,18 @@ db.Cronograma.hasMany(db.Item, {
 db.Item.belongsTo(db.Cronograma, {
   foreignKey: "cronogramaId",
   as: "cronograma",
+});
+
+//Relacion entre puesto y usuario
+// Puesto - Usuario
+db.Puesto.hasMany(db.Usuario, {
+  foreignKey: "puestoId",
+  as: "usuarios",
+});
+
+db.Usuario.belongsTo(db.Puesto, {
+  foreignKey: "puestoId",
+  as: "puestoAlias",
 });
 
 module.exports = db;

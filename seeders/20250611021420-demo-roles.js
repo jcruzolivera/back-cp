@@ -4,7 +4,8 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert("roles", [
       { nombre: "Administrador" },
-      { nombre: "Usuario" },
+      { nombre: "Operario" },
+      { nombre: "Facturador" },
     ]);
   },
 
